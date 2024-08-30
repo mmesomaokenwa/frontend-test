@@ -3,11 +3,12 @@ import { Quicksand } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/general/Header";
 import Footer from "@/components/general/Footer";
+import { baseUrl } from "@/lib/constants";
 
 const quicksand = Quicksand({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_URL!),
+  metadataBase: new URL(baseUrl),
   keywords: [
     "e-commerce",
     "product",
@@ -38,18 +39,18 @@ export const metadata: Metadata = {
   openGraph: {
     title: "eTrade",
     description: "An e-commerce web app",
-    url: process.env.NEXT_PUBLIC_URL!,
+    url: baseUrl,
     siteName: "eTrade",
     images: [
       {
-        url: process.env.NEXT_PUBLIC_URL!,
+        url: "https://mfgadjucjxcfjhuaebjq.supabase.co/storage/v1/object/public/products/public/15-inch-macbook-air-2tb-midnight.png?t=2024-08-30T16%3A09%3A50.064Z", // add an image url
         width: 800,
         height: 600,
       },
     ],
     locale: "en-US",
     type: "website",
-  }
+  },
 };
 
 export default function RootLayout({
