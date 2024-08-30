@@ -29,7 +29,7 @@ const ProductDetailsCard = ({ product }: PropsType) => {
           <DeleteBtn productId={product.id} />
         </div>
       </div>
-      <h3 className="text-3xl font-extrabold">{product.name}</h3>
+      <h2 className="text-3xl font-extrabold">{product.name}</h2>
       <p className="font-medium">{product.description}</p>
       <p className="text-xl font-semibold">${product.price}</p>
       <div className="flex flex-col gap-2">

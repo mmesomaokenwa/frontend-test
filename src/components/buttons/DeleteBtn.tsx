@@ -35,7 +35,7 @@ const DeleteBtn = ({ productId }: PropsType) => {
   }
   return (
     <>
-      <button onClick={() => ref.current?.showModal()}>
+      <button aria-label='Delete' onClick={() => ref.current?.showModal()}>
         <CiTrash size={25} className="text-red-500" />
       </button>
       <dialog

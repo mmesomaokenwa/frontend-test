@@ -21,16 +21,16 @@ export default function Home({ searchParams }: Props) {
     <main className="flex min-h-screen flex-col">
       <section className="flex flex-col gap-10">
         <div className="p-4 bg-gray-200 relative">
-          <div className="max-w-6xl h-[250px] mx-auto flex items-center justify-between">
+          <div className="max-w-6xl h-[350px] mx-auto flex items-center justify-between">
             <div className="flex flex-col gap-3">
-              <h1 className="font-bold text-blue-500">Home</h1>
+              <h2 className="font-bold text-blue-500">Home</h2>
               <p className="text-3xl font-bold">Explore All Products</p>
             </div>
             <Image
               src={"/assets/apple-watch-ultra-2.png"}
               alt=""
-              width={200}
-              height={200}
+              width={300}
+              height={300}
               priority
               className="hidden md:block"
             />
@@ -65,7 +65,7 @@ const HomeProducts = async ({ searchParams }: Props) => {
   // TODO: Implement filtering
   // TODO: Implement pagination
 
-  const stringParams = parseSearchParams(searchParams as any).toString()
+  const stringParams = parseSearchParams({ ...searchParams, page: searchParams.page || '1' } as any).toString()
   
   const res = await fetch(`${baseUrl}/api/products?${stringParams}`)
 
