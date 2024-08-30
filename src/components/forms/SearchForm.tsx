@@ -27,7 +27,7 @@ const SearchForm = () => {
     }
 
     router.push(`?${newParams}`, { scroll: false })
-  }, [debouncedValue])
+  }, [debouncedValue, searchParams, router])
   return (
     <form
       onSubmit={e => e.preventDefault()}
