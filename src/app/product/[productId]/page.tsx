@@ -100,6 +100,7 @@ export const generateMetadata = async ({ params }: PropsType): Promise<Metadata 
     openGraph: {
       title: product.name,
       description: product.description,
+      url: `${baseUrl}/product/${product.id}`,
       images: product.images.map(image => ({
         url: image,
         width: 800,

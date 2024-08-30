@@ -4,7 +4,6 @@ import NavLink from '../navigation/NavLink';
 const headerLinks = [
   { label: 'Home', href: '/' },
   { label: 'Create product', href: '/product/new' },
-  { label: 'Cart', href: '/cart' },
 ]
 
 const Header = () => {

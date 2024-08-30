@@ -18,7 +18,7 @@ const NavLink = ({ label, href, className }: PropsType) => {
     <Link
       href={href}
       data-active={isActive}
-      className={`font-medium data-[active=true]:text-blue-500 ${className}`}
+      className={`font-medium data-[active=true]:text-blue-500 text-sm ${className}`}
     >
       {label}
     </Link>
