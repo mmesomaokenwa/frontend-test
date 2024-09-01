@@ -15,16 +15,16 @@ const ProductSubmitBtn = ({ formState, action }: PropsType) => {
   return (
     <Button
       disabled={pending}
-      variant={formState.status === "error" ? "error" : "primary"}
+      variant={formState?.status === "error" ? "error" : "primary"}
       size="lg"
       className="w-full flex items-center justify-center p-3 font-medium rounded-md disabled:opacity-50 transition-all duration-300"
       type="submit"
     >
       {pending
         ? "Submitting..."
-        : formState.status === "success"
+        : formState?.status === "success"
         ? "Submitted"
-        : formState.status === "error"
+        : formState?.status === "error"
         ? "Retry"
         : action === "create"
         ? "Create Product"

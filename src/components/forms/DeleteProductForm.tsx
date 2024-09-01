@@ -17,12 +17,12 @@ const DeleteProductForm = ({ productId, handleClose }: PropsType) => {
   const router = useRouter()
 
   useEffect(() => {
-    if (formState.status !== 'success') return
+    if (formState?.status !== 'success') return
 
     handleClose()
 
     router.replace('/')
-  }, [formState.status, handleClose, router])
+  }, [formState?.status, handleClose, router])
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
