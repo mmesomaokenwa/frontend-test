@@ -24,6 +24,13 @@ export const GET = async (
     );
   }
 
+  if (!data) {
+    return NextResponse.json(
+      null,
+      { status: 404, statusText: "Product not found" }
+    );
+  }
+
   return NextResponse.json(data)
 }
 
