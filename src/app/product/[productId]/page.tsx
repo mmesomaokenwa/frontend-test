@@ -22,7 +22,6 @@ const ProductDetailsPage = ({ params }: PropsType) => {
   return (
     <main className="flex min-h-screen flex-col p-4 py-10">
       <div className="max-w-6xl w-full mx-auto flex flex-1 flex-col gap-10">
-        {/* Used Suspense and ErrorBoundary inside instead of the loading.tsx and error.tsx files because I found a bug with the reset function in error.tsx */}
         <ErrorBoundary errorComponent={ProductDetailsError}>
           <Suspense fallback={<SuspenseFallback />}>
             <FetchProductDetails productId={params.productId} />

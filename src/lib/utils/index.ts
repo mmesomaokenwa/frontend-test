@@ -2,6 +2,7 @@ import { ZodIssue } from "zod";
 import { Issues } from "../types";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { createClient } from "./supabase/server";
 
 export const cn = (...inputs: string[]) => {
   return twMerge(clsx(inputs));
@@ -70,4 +71,44 @@ export const generateFormData = (data: { [key: string]: string | number | any[] 
   });
 
   return formData
+}
+
+export const storeImage = async (image: File): Promise<string> => {
+  const supabase = createClient();
+
+  const { data, error } = await supabase.storage
+    .from("products")
+    .upload(`public/${image.name}`, image);
+
+  if (error) {
+    console.log(error);
+    return "";
+  }
+
+  const { data: { publicUrl } } = supabase.storage
+    .from("products")
+    .getPublicUrl(`public/${image.name}`);
+
+  return publicUrl;
+}
+
+export const updateImage = async (image: File): Promise<string> => {
+  const supabase = createClient();
+
+  const { data, error } = await supabase.storage
+    .from("products")
+    .upload(`public/${image.name}`, image, {
+      upsert: true, // overwritten if the file already exists
+    });
+
+  if (error) {
+    console.log(error);
+    return "";
+  }
+
+  const { data: { publicUrl } } = supabase.storage
+    .from("products")
+    .getPublicUrl(`public/${image.name}`);
+
+  return publicUrl;
 }
