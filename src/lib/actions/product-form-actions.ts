@@ -1,8 +1,8 @@
 'use server'
 
 import { baseUrl } from "../constants"
-import { productSchema, ProductFormValues } from "../schemas/product"
-import { FormDataEntries, Issues, ProductFormState } from "../types"
+import { productSchema } from "../schemas/product"
+import { FormDataEntries, ProductFormState } from "../types"
 import { formatIssues, generateFormData } from "../utils"
 
 
@@ -24,7 +24,6 @@ export const createProduct = async (prevState: any, formData: FormData): Promise
 
   const newFormData = generateFormData(data)
 
-  // TODO: Create product
   const res = await fetch(`${baseUrl}/api/products`, {
     method: "POST",
     body: newFormData,
@@ -72,7 +71,6 @@ export const editProduct = async (prevState: any, formData: FormData): Promise<P
 
   const newFormData = generateFormData(data)
 
-  // TODO: Update product
   const res = await fetch(`${baseUrl}/api/products/${values.id}`, {
     method: "PATCH",
     body: newFormData,
@@ -104,7 +102,6 @@ export const deleteProduct = async (prevState: any, formData: FormData): Promise
     }
   }
 
-  // TODO: Delete product
   const res = await fetch(`${baseUrl}/api/products/${productId}`, {
     method: "DELETE",
   });

@@ -4,10 +4,14 @@ export type ProductFormValues = Omit<Tables<"products">, "created_at" | "id" | "
   images: string[] | File[];
 };
 
+export type Product = Tables<"products"> & { category: Tables<"category"> };
+
 export type ProductsResponse = {
-  data: Tables<"products">[];
+  data: Product[];
   count: number;
 }
+
+export type Category = Tables<"category">;
 
 export type Issues = { [key: string]: string }
 

@@ -4,8 +4,7 @@ import SuspenseFallback from '@/components/cards/SuspenseFallback'
 import ProductDetailsError from '@/components/error-components/ProductDetailsError'
 import ProductsList from '@/components/lists/ProductsList'
 import { baseUrl } from '@/lib/constants'
-import { ProductsResponse } from '@/lib/types'
-import { Tables } from '@/lib/utils/supabase/types'
+import { Product, ProductsResponse } from '@/lib/types'
 import { Metadata } from 'next'
 import { ErrorBoundary } from 'next/dist/client/components/error-boundary'
 import { notFound } from 'next/navigation'
@@ -35,26 +34,17 @@ const ProductDetailsPage = ({ params }: PropsType) => {
 }
 
 const FetchProductDetails = async ({ productId }: { productId: string }) => {
-  const [productRes, relatedProductsRes] = await Promise.all([
-    fetch(`${baseUrl}/api/products/${productId}`),
-    fetch(`${baseUrl}/api/products/${productId}/related`),
-  ]);
+  const res = await fetch(`${baseUrl}/api/products/${productId}`)
 
-  if (!productRes.ok && productRes.status !== 404) {
-    throw new Error(productRes.statusText);
+  if (!res.ok && res.status !== 404) {
+    throw new Error(res.statusText);
   }
 
-  if (productRes.status === 404) {
+  if (res.status === 404) {
     notFound();
   }
 
-  const [product, relatedProducts] = await Promise.all([
-    productRes.json(),
-    relatedProductsRes.json()
-  ]) as [
-    Tables<'products'> & { category: Tables<'category'> },
-    Tables<'products'>[]
-  ]
+  const product = await res.json() as Product
 
   return (
     <>
@@ -67,15 +57,31 @@ const FetchProductDetails = async ({ productId }: { productId: string }) => {
       </section>
       <section className="flex flex-col gap-4">
         <h3 className="text-2xl font-bold">Related Products</h3>
-        {relatedProducts ? (
-          <ProductsList products={relatedProducts} />
-        ) : (
-          <div className='flex-1 flex items-center justify-center h-[300px]'>
-            <p>No related products found</p>
-          </div>
-        )}
+        <ErrorBoundary errorComponent={ProductDetailsError}>
+          <Suspense fallback={<SuspenseFallback />}>
+            <FetchRelatedProducts productId={productId} />
+          </Suspense>
+        </ErrorBoundary>
       </section>
     </>
+  );
+}
+
+const FetchRelatedProducts = async ({ productId }: { productId: string }) => {
+  const res = await fetch(`${baseUrl}/api/products/${productId}/related`)
+
+  if (!res.ok) {
+    throw new Error(res.statusText);
+  }
+
+  const relatedProducts = await res.json() as Product[]
+
+  return relatedProducts ? (
+    <ProductsList products={relatedProducts} />
+  ) : (
+    <div className="flex-1 flex items-center justify-center h-[300px]">
+      <p>No related products found</p>
+    </div>
   );
 }
 
@@ -84,7 +90,7 @@ export const generateMetadata = async ({ params }: PropsType): Promise<Metadata 
 
   if (!res.ok) return
 
-  const product = await res.json() as Tables<'products'>
+  const product = await res.json() as Product
 
   if (!product) return
 
@@ -110,7 +116,7 @@ export const generateStaticParams = async () => {
 
   if (!res.ok) return [];
 
-  const { data: products } = (await res.json()) as ProductsResponse;
+  const { data: products } = await res.json() as ProductsResponse;
 
   if (!products) return [];
 

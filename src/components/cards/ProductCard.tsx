@@ -1,11 +1,11 @@
 import React from "react";
-import { Tables } from "@/lib/utils/supabase/types"
 import Image from "next/image";
 import Link from "next/link";
 import { calculateDiscountPrice } from "@/lib/utils"
+import { Product } from "@/lib/types";
 
 type Props = {
-  product: Tables<'products'>;
+  product: Product;
 };
 
 const ProductCard = ({ product }: Props) => {

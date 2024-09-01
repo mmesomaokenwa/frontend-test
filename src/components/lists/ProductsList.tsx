@@ -1,10 +1,10 @@
 import React from "react";
 import ProductCard from "../cards/ProductCard";
-import { Tables } from "@/lib/utils/supabase/types";
 import { cn } from "@/lib/utils";
+import { Product } from "@/lib/types";
 
 type Props = {
-  products: Tables<'products'>[]
+  products: Product[]
   className?: string
 };
 

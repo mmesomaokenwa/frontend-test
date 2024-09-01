@@ -1,12 +1,12 @@
 'use client'
 
-import { Tables } from '@/lib/utils/supabase/types'
+import { Product } from '@/lib/types'
 import Image from 'next/image'
 import React, { useState } from 'react'
 
 type PropsType = {
-  images: Tables<'products'>['images']
-  discountPercentage: Tables<'products'>['discounted_percentage']
+  images: Product['images']
+  discountPercentage: Product['discounted_percentage']
 }
 
 const ProductImagesSlider = ({ images, discountPercentage }: PropsType) => {

@@ -70,9 +70,13 @@ const HomeProducts = async ({ searchParams }: { searchParams: SearchParams }) =>
 
   return (
     <div className="w-full flex flex-col items-center gap-6 ">
-      <ProductsList products={products} />
-      {products.length && (
-        <Pagination searchParams={searchParams} count={count} />
+      {products.length ? (
+        <>
+          <ProductsList products={products} />
+          <Pagination searchParams={searchParams} count={count} />
+        </>
+      ) : (
+        <p>No products found</p>
       )}
     </div>
   );

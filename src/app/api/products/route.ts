@@ -1,6 +1,6 @@
 import { productsPerPage } from "@/lib/constants";
 import { productSchema } from "@/lib/schemas/product";
-import { FormDataEntries, ProductFormValues } from "@/lib/types";
+import { FormDataEntries } from "@/lib/types";
 import { createClient } from "@/lib/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";

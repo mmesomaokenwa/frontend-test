@@ -1,20 +1,19 @@
 'use client'
 
-import { Tables } from '@/lib/utils/supabase/types'
 import React, { useEffect, useRef, useState } from 'react'
 import FormField from '../inputs/FormField'
 import Image from 'next/image'
 import { ProductFormValues, productSchema } from '@/lib/schemas/product'
 import { useRouter } from 'next/navigation'
 import { formatIssues } from '@/lib/utils'
-import { Issues } from '@/lib/types'
+import { Issues, Product } from '@/lib/types'
 import { useFormState } from 'react-dom'
 import { createProduct, editProduct } from '@/lib/actions/product-form-actions'
 import ProductSubmitBtn from '../buttons/ProductSubmitBtn'
 import CategorySelect from '../inputs/CategorySelect'
 
 type PropsType = {
-  product?: Tables<'products'> & { category: Tables<'category'> }
+  product?: Product
   action: 'create' | 'edit'
 }
 

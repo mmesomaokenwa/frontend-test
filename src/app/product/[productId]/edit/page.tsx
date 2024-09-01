@@ -1,13 +1,12 @@
 import ProductDetailsError from '@/components/error-components/ProductDetailsError';
 import ProductForm from '@/components/forms/ProductForm';
-import Loader from '@/components/general/Loader';
 import { baseUrl } from '@/lib/constants';
-import { Tables } from '@/lib/utils/supabase/types';
 import { Metadata } from 'next';
 import { ErrorBoundary } from 'next/dist/client/components/error-boundary';
 import React, { Suspense } from 'react'
 import { generateStaticParams } from '../page';
 import SuspenseFallback from '@/components/cards/SuspenseFallback';
+import { Product } from '@/lib/types';
 
 type PropsType = {
   params: {
@@ -40,7 +39,7 @@ const EditProductPage = ({ params }: PropsType) => {
 const ProductEdit = async ({ params }: PropsType) => {
   const res = await fetch(`${baseUrl}/api/products/${params.productId}`)
 
-  const product = await res.json() as Tables<'products'> & { category: Tables<'category'> }
+  const product = await res.json() as Product
 
   return <ProductForm action="edit" product={product} />;
 }

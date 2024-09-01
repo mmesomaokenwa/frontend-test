@@ -1,15 +1,13 @@
-import { Tables } from '@/lib/utils/supabase/types'
 import React from 'react'
 import AddToFavoriteBtn from '../buttons/AddToFavoriteBtn'
 import AddToCartBtn from '../buttons/AddToCartBtn'
 import Link from 'next/link'
 import { CiEdit } from 'react-icons/ci'
 import DeleteBtn from '../buttons/DeleteBtn'
+import { Product } from '@/lib/types'
 
 type PropsType = {
-  product: Tables<'products'> & {
-    category: Tables<'category'>
-  }
+  product: Product
 }
 
 const ProductDetailsCard = ({ product }: PropsType) => {
