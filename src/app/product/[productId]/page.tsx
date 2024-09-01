@@ -1,7 +1,7 @@
 import ProductDetailsCard from '@/components/cards/ProductDetailsCard'
 import ProductImagesSlider from '@/components/cards/ProductImagesSlider'
+import SuspenseFallback from '@/components/cards/SuspenseFallback'
 import ProductDetailsError from '@/components/error-components/ProductDetailsError'
-import Loader from '@/components/general/Loader'
 import ProductsList from '@/components/lists/ProductsList'
 import { baseUrl } from '@/lib/constants'
 import { ProductsResponse } from '@/lib/types'
@@ -25,13 +25,7 @@ const ProductDetailsPage = ({ params }: PropsType) => {
       <div className="max-w-6xl w-full mx-auto flex flex-1 flex-col gap-10">
         {/* Used Suspense and ErrorBoundary inside instead of the loading.tsx and error.tsx files because I found a bug with the reset function in error.tsx */}
         <ErrorBoundary errorComponent={ProductDetailsError}>
-          <Suspense
-            fallback={
-              <div className="flex-1 flex items-center justify-center">
-                <Loader />
-              </div>
-            }
-          >
+          <Suspense fallback={<SuspenseFallback />}>
             <FetchProductDetails productId={params.productId} />
           </Suspense>
         </ErrorBoundary>
@@ -73,7 +67,7 @@ const FetchProductDetails = async ({ productId }: { productId: string }) => {
       </section>
       <section className="flex flex-col gap-4">
         <h3 className="text-2xl font-bold">Related Products</h3>
-        {relatedProducts?.length ? (
+        {relatedProducts ? (
           <ProductsList products={relatedProducts} />
         ) : (
           <div className='flex-1 flex items-center justify-center h-[300px]'>
@@ -112,19 +106,15 @@ export const generateMetadata = async ({ params }: PropsType): Promise<Metadata 
 }
 
 export const generateStaticParams = async () => {
-  try {
-    const res = await fetch(`${baseUrl}/api/products`);
+  const res = await fetch(`${baseUrl}/api/products`);
 
-    if (!res.ok) return [];
+  if (!res.ok) return [];
 
-    const { data: products } = (await res.json()) as ProductsResponse;
+  const { data: products } = (await res.json()) as ProductsResponse;
 
-    if (!products) return [];
+  if (!products) return [];
 
-    return products.map((product) => ({ productId: product.id }));
-  } catch (error) {
-    return [];
-  }
+  return products.map((product) => ({ productId: product.id }));
 }
 
 export default ProductDetailsPage

@@ -9,7 +9,14 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
 
   const productsSitemap: MetadataRoute.Sitemap = products?.map(product => ({
     url: `${baseUrl}/product/${product.id}`,
-    lastModified: new Date(),
+    lastModified: product.updated_at,
+    changeFrequency: 'daily',
+    priority: 0.7
+  }))
+
+  const productsEditSitemap: MetadataRoute.Sitemap = products?.map(product => ({
+    url: `${baseUrl}/product/${product.id}/edit`,
+    lastModified: product.updated_at,
     changeFrequency: 'daily',
     priority: 0.7
   }))
@@ -21,7 +28,14 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
       changeFrequency: 'daily',
       priority: 1
     },
-    ...productsSitemap
+    ...productsSitemap,
+    ...productsEditSitemap,
+    {
+      url: `${baseUrl}/product/new`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 0.5
+    }
   ]
 }
 

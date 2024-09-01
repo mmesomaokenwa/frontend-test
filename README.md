@@ -55,7 +55,7 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 
 ## Additional Packages Used
 
-I did not know if I was limited to some particular packages. I tried contacting the hiring team on email but got no replies so I decided to only use packages that are necessary for optimazation:
+I did not know if I was limited to some particular packages. I tried contacting the hiring team on email but got no replies so I decided to only use packages that are necessary for storage, validation and optimazation:
 
 - [`sharp`](https://sharp.pixelplumbing.com/) for image optimization.
 - [`supabase`](https://supabase.com/) for the database and storage system for images.
@@ -95,6 +95,8 @@ I made sure to use the right semantic HTML tags to make the application accessib
 I used the `<dialog>` tag for modals instead of `<div>` tags as it is more accessible and semantic. For buttons and links without definitive texts, I used the `aria-label` attribute to provide a description of the element to screen readers. This way, users who rely on screen readers can still use the application without any issues.
 
 I also made sure that all the interactive elements on the page are focusable by keyboard and that the tab order is logical and follows the order of the elements on the page. This makes it easy for users who rely on keyboard navigation to use the application.
+
+I also made the forms progressively enhanced. This is important for users who choose to disable JavaScript in the browser. This way, they can interact with forms to an extent without JavaScript.
 
 ## Design Principles Used
 

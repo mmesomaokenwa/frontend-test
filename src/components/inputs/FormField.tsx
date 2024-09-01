@@ -24,7 +24,7 @@ const FormField = ({ id, error, label, isTextArea, ...props }: PropsType) => {
           {...props as ComponentProps<'input'>}
         />
       )}
-      {error && <span className="text-red-500">{error}</span>}
+      {error && <small role='status' className="text-red-500">{error}</small>}
     </div>
   );
 }

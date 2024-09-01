@@ -1,100 +1,83 @@
 'use client'
 
 import { Tables } from '@/lib/utils/supabase/types'
-import React, { useState } from 'react'
-import FormField from './FormField'
-import useCategories from '@/lib/hooks/useCategories'
+import React, { useEffect, useRef, useState } from 'react'
+import FormField from '../inputs/FormField'
 import Image from 'next/image'
-import { ProductFormValues } from '@/lib/types'
+import { ProductFormValues, productSchema } from '@/lib/schemas/product'
 import { useRouter } from 'next/navigation'
+import { formatIssues } from '@/lib/utils'
+import { Issues } from '@/lib/types'
+import { useFormState } from 'react-dom'
+import { createProduct, editProduct } from '@/lib/actions/product-form-actions'
+import ProductSubmitBtn from '../buttons/ProductSubmitBtn'
+import CategorySelect from '../inputs/CategorySelect'
 
 type PropsType = {
   product?: Tables<'products'> & { category: Tables<'category'> }
   action: 'create' | 'edit'
 }
 
-
+const initialState = { status: null, message: "", fieldErrors: null }
 
 const ProductForm = ({ product, action }: PropsType) => {
-  const [form, setForm] = useState<ProductFormValues>({
-    name: product?.name || '',
-    description: product?.description || '',
-    price: product?.price || 0,
-    stock: product?.stock || 0,
-    discounted_percentage: product?.discounted_percentage || 0,
-    category: product?.category.id || '',
-    images: product?.images || [],
-  })
+  const [formState, formAction] = useFormState(action === 'create' ? createProduct : editProduct, initialState)
+  const [errors, setErrors] = useState<Issues | null>(null)
+  const [images, setImages] = useState<ProductFormValues['images']>([])
 
-  const [status, setStatus] = useState<'pending' | 'error' | 'success' | null>(null)
-
-  const { data: categories, isLoading, error } = useCategories()
+  const ref = useRef<HTMLFormElement>(null)
 
   const router = useRouter()
 
-  console.log(status)
+  useEffect(() => {
+    if (product?.images) setImages(product.images)
+  }, [product?.images, setImages])
 
-  const handleSubmit = async (formData: FormData) => {
-    setStatus((prev) => "pending")
-    if (action === 'edit') {
-      const res = await fetch(`/api/products/${product?.id}`, {
-        method: 'PATCH',
-        body: formData
-      })
+  useEffect(() => {
+    if (formState.fieldErrors) setErrors(formState.fieldErrors)
+  }, [formState.fieldErrors, setErrors])
+  
+  useEffect(() => { 
+    if (formState.status !== 'success') return
 
-      if (!res.ok) {
-        console.log(res.statusText)
-        return setStatus(prev => 'error')
-      }
+    action === 'create'
+      ? router.push('/')
+      : router.push(`/product/${product?.id}`)
+  }, [formState.status, router])
 
-      resetForm(form)
+  const validateForm = () => {
+    if (!ref.current) return
 
-      setStatus(prev => 'success')
+    setErrors(null)
 
-      router.push(`/product/${product?.id}`)
+    const formData = new FormData(ref.current as HTMLFormElement)
+
+    const values = {
+      ...Object.fromEntries(formData),
+      images: formData.getAll('images')
     }
 
-    if (action === 'create') { 
-      const res = await fetch('/api/products', {
-        method: 'POST',
-        body: formData
-      })
+    const { error } = productSchema.safeParse(values)
 
-      if (!res.ok) {
-        console.log(res.statusText)
-        return setStatus(prev => 'error')
-      }
-
-      resetForm()
-
-      setStatus(prev => 'success')
-
-      router.push('/')
+    if (error) {
+      setErrors(formatIssues(error.issues))
     }
   }
 
-  const resetForm = (form?: ProductFormValues) => {
-    setForm({
-      name: form?.name || '',
-      description: form?.description || '',
-      price: form?.price || 0,
-      stock: form?.stock || 0,
-      discounted_percentage: form?.discounted_percentage || 0,
-      category: form?.category || '',
-      images: form?.images || [],
-    })
-  }
   return (
-    <form action={handleSubmit} className="flex flex-col gap-4">
+    <form ref={ref} action={formAction} className="flex flex-col gap-4">
+      {action === 'edit' && (
+        <input type="hidden" name='id' value={product?.id} />
+      )}
       <FormField
         id="name"
         label="Product Name"
         type="text"
         name="name"
         placeholder="Product Name"
-        value={form.name}
-        onChange={(e) => setForm({ ...form, name: e.target.value })}
-        error={""}
+        defaultValue={product?.name}
+        onBlur={validateForm}
+        error={errors?.name}
       />
 
       <FormField
@@ -104,18 +87,18 @@ const ProductForm = ({ product, action }: PropsType) => {
         type="text"
         name="description"
         placeholder="Product Description"
-        value={form.description}
-        onChange={(e) => setForm({ ...form, description: e.target.value })}
-        error={""}
+        defaultValue={product?.description}
+        onBlur={validateForm}
+        error={errors?.description}
       />
 
-      {!!form.images.length && (
+      {!!images.length && (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {form.images.map((image, index) => (
+          {images.map((image, index) => (
             <Image
               key={index}
               src={
-                action === "create"
+                image instanceof File
                   ? URL.createObjectURL(image as Blob)
                   : (image as string)
               }
@@ -137,30 +120,23 @@ const ProductForm = ({ product, action }: PropsType) => {
         multiple
         placeholder="Product Images"
         onChange={(e) =>
-          setForm({ ...form, images: Array.from(e.target.files || []) })
+          setImages(Array.from(e.target.files || []))
         }
-        error={""}
+        onBlur={validateForm}
+        error={errors?.images}
       />
 
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid items-start md:grid-cols-2 gap-4">
         <div className="flex flex-col gap-2">
           <label htmlFor="category" className="font-medium">
             Product Category
           </label>
-          <select
+          <CategorySelect
             id="category"
             name="category"
+            defaultValue={product?.category?.id}
             className="p-[9px] border border-gray-300 rounded-md"
-            value={form.category}
-            onChange={(e) => setForm({ ...form, category: e.target.value })}
-          >
-            <option value="">Select a category</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
+           />
         </div>
 
         <FormField
@@ -170,9 +146,9 @@ const ProductForm = ({ product, action }: PropsType) => {
           type="number"
           min={0}
           placeholder="Product Price"
-          value={form.price}
-          onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
-          error={""}
+          defaultValue={product?.price}
+          onBlur={validateForm}
+          error={errors?.price}
         />
       </div>
 
@@ -184,43 +160,24 @@ const ProductForm = ({ product, action }: PropsType) => {
           type="number"
           min={0}
           placeholder="Product Stock"
-          value={form.stock}
-          onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })}
-          error={""}
+          defaultValue={product?.stock}
+          onBlur={validateForm}
+          error={errors?.stock}
         />
 
         <FormField
           id="discounted_percentage"
           name="discounted_percentage"
-          label="Product Discounted Percentage"
+          label="Discount"
           type="number"
-          min={0}
-          placeholder="Product Discounted Percentage"
-          value={form.discounted_percentage || 0}
-          onChange={(e) =>
-            setForm({ ...form, discounted_percentage: Number(e.target.value) })
-          }
-          error={""}
+          placeholder=""
+          defaultValue={product?.discounted_percentage || undefined}
+          onBlur={validateForm}
+          error={errors?.discounted_percentage}
         />
       </div>
 
-      <button
-        disabled={status === "pending"}
-        className="w-full flex items-center justify-center p-3 bg-blue-500 text-white font-medium rounded-md disabled:bg-blue-500/50 transition-colors duration-300"
-        type="submit"
-      >
-        {status === "pending" ? (
-          "Submitting..."
-        ) : status === "success" ? (
-          "Submitted"
-        ) : status === "error" ? (
-          "Retry"
-        ) : action === "create" ? (
-          "Create Product"
-        ) : (
-          "Update Product"
-        )}
-      </button>
+      <ProductSubmitBtn action={action} formState={formState} />
     </form>
   );
 }

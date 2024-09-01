@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/utils/supabase/server";
-import { ProductFormValues } from "@/lib/types";
+import { FormDataEntries, ProductFormValues } from "@/lib/types";
 import { revalidatePath } from "next/cache";
+import { productSchema } from "@/lib/schemas/product";
 
 export const GET = async (
   req: NextRequest,
@@ -34,22 +35,27 @@ export const PATCH = async (
 
   const formData = await req.formData();
 
-  const body: ProductFormValues = {
-    name: formData.get("name") as string,
-    description: formData.get("description") as string,
-    price: Number(formData.get("price")),
-    stock: Number(formData.get("stock")),
-    discounted_percentage: Number(formData.get("discounted_percentage")),
-    category: formData.get("category") as string,
-    images: formData.getAll("images") as File[],
+  const values: FormDataEntries = {
+    ...Object.fromEntries(formData),
+    images: formData.getAll("images")
   };
+
+  const { data, error: parseErrorr } = productSchema.safeParse(values)
+
+  if (parseErrorr) {
+    console.log(parseErrorr)
+    return NextResponse.json(
+      null,
+      { status: 400, statusText: "Invalid form data" }
+    );
+  }
 
   let images
 
   // upload images to storage if images were added or changed
-  if ((body.images as File[])[0].name && (body.images as File[])[0].size) {
+  if ((data.images as File[])[0].name && (data.images as File[])[0].size) {
     images = await Promise.all(
-      (body.images as File[]).map(async (image) => {
+      (data.images as File[]).map(async (image) => {
         const { data, error } = await supabase.storage
           .from("products")
           .upload(`public/${image.name}`, image, {
@@ -74,7 +80,7 @@ export const PATCH = async (
 
   const { error, status, statusText } = await supabase
     .from("products")
-    .update({ ...body, images })
+    .update({ ...data, images, updated_at: new Date().toDateString() })
     .eq("id", params.productId)
     .single();
   

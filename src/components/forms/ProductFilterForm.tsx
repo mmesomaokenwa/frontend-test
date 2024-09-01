@@ -4,6 +4,7 @@ import useCategories from '@/lib/hooks/useCategories'
 import { formUrlQuery, removeKeysFromQuery } from '@/lib/utils'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useState } from 'react'
+import CategorySelect from '../inputs/CategorySelect'
 
 const prices = [
   { label: '50', value: 50 },
@@ -21,7 +22,7 @@ const ProductFilterForm = () => {
     price: searchParams.get('price') || '',
   })
   const router = useRouter()
-  const { data: categories, isLoading, error } = useCategories()
+  const { data: categories } = useCategories()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,7 +33,7 @@ const ProductFilterForm = () => {
 
     const newParams = formUrlQuery({
       params: searchParams.toString(),
-      pairs: { category, price }
+      pairs: { category, price, page: '1' }
     })
 
     router.push(`?${newParams}`, { scroll: false })
@@ -43,25 +44,18 @@ const ProductFilterForm = () => {
 
     const newParams = removeKeysFromQuery({
       params: searchParams.toString(),
-      keysToRemove: ['category', 'price'],
+      keysToRemove: ['category', 'price', 'page'],
     })
 
     router.push(`?${newParams}`, { scroll: false })
   }
   return (
     <form onSubmit={handleSubmit} className="flex lg:flex-col flex-wrap gap-4 lg:gap-8">
-      <select
+      <CategorySelect
         className="lg:hidden text-sm p-2 border rounded-md"
         value={form.category}
         onChange={(e) => setForm({ ...form, category: e.target.value })}
-      >
-        <option value="">Categories</option>
-        {categories.map((category) => (
-          <option key={category.id} value={category.id}>
-            {category.name}
-          </option>
-        ))}
-      </select>
+      />
       <select
         className="lg:hidden text-sm p-2 border rounded-md"
         value={form.price}

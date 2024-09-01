@@ -7,6 +7,7 @@ import { Metadata } from 'next';
 import { ErrorBoundary } from 'next/dist/client/components/error-boundary';
 import React, { Suspense } from 'react'
 import { generateStaticParams } from '../page';
+import SuspenseFallback from '@/components/cards/SuspenseFallback';
 
 type PropsType = {
   params: {
@@ -27,11 +28,7 @@ const EditProductPage = ({ params }: PropsType) => {
         <h2 className="text-2xl font-bold">Edit Product</h2>
         {/* Used Suspense and ErrorBoundary inside instead of the loading.tsx and error.tsx files because I found a bug with the reset function in error.tsx */}
         <ErrorBoundary errorComponent={ProductDetailsError}>
-          <Suspense fallback={
-            <div className="flex-1 flex items-center justify-center">
-              <Loader />
-            </div>
-          }>
+          <Suspense fallback={<SuspenseFallback />}>
             <ProductEdit params={params} />
           </Suspense>
         </ErrorBoundary> 

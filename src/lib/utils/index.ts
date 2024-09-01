@@ -1,3 +1,6 @@
+import { ZodIssue } from "zod";
+import { FormDataEntries, Issues } from "../types";
+
 export const calculateDiscountPrice = (price: number, discountPercentage: number) => {
   return price - (price * discountPercentage) / 100;
 };
@@ -40,3 +43,25 @@ export const removeKeysFromQuery = ({
 
   return searchParams.toString()
 };
+
+export const formatIssues = (issues: ZodIssue[]): Issues => {
+  return issues.reduce((acc, issue) => {
+    acc[issue.path[0]] = issue.message
+    return acc
+  }, {} as Issues)
+}
+
+export const generateFormData = (data: { [key: string]: string | number | any[] }): FormData => {
+  const formData = new FormData()
+
+  Object.entries(data).forEach(([key, value]) => {
+    if (typeof value === "string") formData.append(key, value);
+    else if (typeof value === "number")
+      formData.append(key, value.toString());
+    else if (Array.isArray(value)) {
+      value.forEach((val) => formData.append(key, val));
+    }
+  });
+
+  return formData
+}

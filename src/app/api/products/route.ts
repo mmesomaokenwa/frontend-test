@@ -1,4 +1,6 @@
-import { ProductFormValues } from "@/lib/types";
+import { productsPerPage } from "@/lib/constants";
+import { productSchema } from "@/lib/schemas/product";
+import { FormDataEntries, ProductFormValues } from "@/lib/types";
 import { createClient } from "@/lib/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
@@ -18,16 +20,16 @@ export const GET = async (req: NextRequest) => {
   if (price) conditions.push(`price.lte.${price}`);
   if (query) conditions.push(`name.ilike.%${query}%`);
 
-  const offset = page && typeof Number(page) === 'number' ? (Number(page) - 1) * 10 : undefined
+  const offset = page && typeof Number(page) === 'number' ? (Number(page) - 1) * productsPerPage : undefined
 
   let res
 
-  if (conditions.length > 0) { 
-    if (offset) res = await supabase
+  if (conditions.length) { 
+    if (offset !== undefined) res = await supabase
       .from("products")
       .select("*, category(*)", { count: "exact" })
       .or(`and(${conditions.join(",")})`)
-      .range(offset, offset + 10)
+      .range(offset, offset + productsPerPage - 1)
       .order(price ? "price" : "created_at", { ascending: false });
     
     else res = await supabase
@@ -36,10 +38,10 @@ export const GET = async (req: NextRequest) => {
       .or(`and(${conditions.join(",")})`)
       .order(price ? "price" : "created_at", { ascending: false });
   } else {
-    if (offset) res = await supabase
+    if (offset !== undefined) res = await supabase
       .from("products")
       .select("*, category(*)", { count: "exact" })
-      .range(offset, offset + 11)
+      .range(offset, offset + productsPerPage - 1)
       .order("created_at", { ascending: false });
     
     else res = await supabase
@@ -66,17 +68,22 @@ export const POST = async (req: NextRequest) => {
 
   const formData = await req.formData()
 
-  const body: ProductFormValues = {
-    name: formData.get('name') as string,
-    description: formData.get('description') as string,
-    price: Number(formData.get('price')),
-    stock: Number(formData.get('stock')),
-    discounted_percentage: Number(formData.get('discounted_percentage')),
-    category: formData.get('category') as string,
-    images: formData.getAll('images') as File[]
+  const values: FormDataEntries = {
+    ...Object.fromEntries(formData),
+    images: formData.getAll("images"),
+  };
+
+  const { data, error: parseErrorr } = productSchema.safeParse(values);
+
+  if (parseErrorr) {
+    console.log(parseErrorr);
+    return NextResponse.json(null, {
+      status: 400,
+      statusText: "Invalid form data",
+    });
   }
 
-  let images = await Promise.all((body.images as File[]).map(async (image) => {
+  let images = await Promise.all((data.images as File[]).map(async (image) => {
     const { data, error } = await supabase.storage
       .from("products")
       .upload(`public/${image.name}`, image)
@@ -98,7 +105,7 @@ export const POST = async (req: NextRequest) => {
 
   const { error, status, statusText } = await supabase
     .from("products")
-    .insert({ ...body, images })
+    .insert({ ...data, images })
   
   if (error) { 
     console.log(error)

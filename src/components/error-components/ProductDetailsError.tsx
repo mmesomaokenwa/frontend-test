@@ -5,7 +5,7 @@ import React from 'react'
 
 const ProductDetailsError: ErrorComponent = ({ error, reset }) => {
   return (
-    <div className="flex-1 flex items-center justify-center gap-4 p-4 py-8">
+    <div className="flex-1 flex flex-col items-center justify-center gap-4 p-4 py-8">
       <p className="text-xl font-semibold text-center">
         {process.env.NODE_ENV === "development"
           ? error.message

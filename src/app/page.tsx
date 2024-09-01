@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { Suspense } from "react";
 import ProductsList from "@/components/lists/ProductsList"
-import Loader from "@/components/general/Loader"
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import HomeError from "@/components/error-components/HomeError"
 import SearchForm from "@/components/forms/SearchForm";
@@ -9,6 +8,9 @@ import ProductFilterForm from "@/components/forms/ProductFilterForm";
 import { parseSearchParams } from "@/lib/utils";
 import { ProductsResponse } from "@/lib/types";
 import { baseUrl } from "@/lib/constants";
+import SuspenseFallback from "@/components/cards/SuspenseFallback";
+import { SearchParams, searchParamsSchema } from "@/lib/schemas/search-params";
+import Pagination from "@/components/navigation/Pagination";
 
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined }
@@ -17,6 +19,7 @@ type Props = {
 export const revalidate = 3600
 
 export default function Home({ searchParams }: Props) {
+  const { data } = searchParamsSchema.safeParse(searchParams)
   return (
     <main className="flex min-h-screen flex-col">
       <section className="flex flex-col gap-10">
@@ -42,16 +45,9 @@ export default function Home({ searchParams }: Props) {
         <div className="px-4">
           <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-4">
             <ProductFilterForm />
-            {/* Used Suspense and ErrorBoundary inside instead of the loading.tsx and error.tsx files for UI streaming */}
             <ErrorBoundary errorComponent={HomeError}>
-              <Suspense
-                fallback={
-                  <div className="flex-1 flex items-center justify-center min-h-[500px]">
-                    <Loader />
-                  </div>
-                }
-              >
-                <HomeProducts searchParams={searchParams} />
+              <Suspense fallback={<SuspenseFallback className="min-h-[500px]" />}>
+                <HomeProducts searchParams={data || {}} />
               </Suspense>
             </ErrorBoundary>
           </div>
@@ -61,11 +57,8 @@ export default function Home({ searchParams }: Props) {
   );
 }
 
-const HomeProducts = async ({ searchParams }: Props) => {
-  // TODO: Implement filtering
-  // TODO: Implement pagination
-
-  const stringParams = parseSearchParams({ ...searchParams, page: searchParams.page || '1' } as any).toString()
+const HomeProducts = async ({ searchParams }: { searchParams: SearchParams }) => {
+  const stringParams = parseSearchParams({ ...searchParams, page: (searchParams.page || 1).toString() }).toString()
   
   const res = await fetch(`${baseUrl}/api/products?${stringParams}`)
 
@@ -78,9 +71,9 @@ const HomeProducts = async ({ searchParams }: Props) => {
   return (
     <div className="w-full flex flex-col items-center gap-6 ">
       <ProductsList products={products} />
-      <button className="p-4 px-12 bg-gray-100 rounded-md font-semibold">
-        Load More
-      </button>
+      {products.length && (
+        <Pagination searchParams={searchParams} count={count} />
+      )}
     </div>
   );
 }
