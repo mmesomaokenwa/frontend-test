@@ -10,7 +10,7 @@ const Header = () => {
   return (
     <header className="w-full p-4 shadow-md bg-white sticky top-0 z-50">
       <div className='w-full max-w-6xl mx-auto flex items-center justify-between'>
-        <h1 className="text-3xl font-bold">eTrade</h1>
+        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold">eTrade</h1>
         <ul className='flex items-center gap-4'>
           {headerLinks.map((link) => (
             <li key={link.href}>
@@ -18,7 +18,6 @@ const Header = () => {
             </li>
           ))}
         </ul>
-        {/* <AddToCartBtn /> */}
       </div>
     </header>
   );

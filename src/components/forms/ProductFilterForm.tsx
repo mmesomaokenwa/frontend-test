@@ -116,13 +116,13 @@ const ProductFilterForm = () => {
         </div>
       </div>
 
-      <div className="flex items-center justify-end gap-4">
+      <div className="flex items-center justify-end gap-4 lg:mt-6">
         <Button
           type="button"
           variant="outline"
           size="sm"
           onClick={handleReset}
-          className="p-2 px-4 border-2 text-base font-medium"
+          className="lg:p-2 lg:px-4 border-2 lg:text-base font-medium"
         >
           Reset
         </Button>
@@ -130,7 +130,7 @@ const ProductFilterForm = () => {
           type="submit"
           size="sm"
           variant="primary"
-          className="p-2 px-4 text-base font-medium"
+          className="lg:p-2 lg:px-4 lg:text-base font-medium"
         >
           Filter
         </Button>
