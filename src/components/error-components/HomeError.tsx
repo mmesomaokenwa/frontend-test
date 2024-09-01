@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { ErrorComponent } from 'next/dist/client/components/error-boundary'
+import Button from '../buttons/Button';
 
 const HomeError: ErrorComponent = ({ error, reset }) => {
   return (
@@ -11,12 +12,14 @@ const HomeError: ErrorComponent = ({ error, reset }) => {
           ? error.message
           : "An error occured."}
       </p>
-      <button
-        className="p-4 px-8 rounded-md bg-blue-500 text-white"
+      <Button
+        variant='primary'
+        size='lg'
+        className="px-8"
         onClick={() => reset()}
       >
         Try again
-      </button>
+      </Button>
     </div>
   );
 }

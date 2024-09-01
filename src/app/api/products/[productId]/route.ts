@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/utils/supabase/server";
-import { FormDataEntries, ProductFormValues } from "@/lib/types";
+import { FormDataEntries } from "@/lib/types";
 import { revalidatePath } from "next/cache";
 import { productSchema } from "@/lib/schemas/product";
 

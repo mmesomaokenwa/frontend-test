@@ -77,7 +77,7 @@ const ProductForm = ({ product, action }: PropsType) => {
         placeholder="Product Name"
         defaultValue={product?.name}
         onBlur={validateForm}
-        error={errors?.name}
+        error={errors?.name || formState.fieldErrors?.name}
       />
 
       <FormField
@@ -89,7 +89,7 @@ const ProductForm = ({ product, action }: PropsType) => {
         placeholder="Product Description"
         defaultValue={product?.description}
         onBlur={validateForm}
-        error={errors?.description}
+        error={errors?.description || formState.fieldErrors?.description}
       />
 
       {!!images.length && (
@@ -123,7 +123,7 @@ const ProductForm = ({ product, action }: PropsType) => {
           setImages(Array.from(e.target.files || []))
         }
         onBlur={validateForm}
-        error={errors?.images}
+        error={errors?.images || formState.fieldErrors?.images}
       />
 
       <div className="grid items-start md:grid-cols-2 gap-4">
@@ -136,7 +136,8 @@ const ProductForm = ({ product, action }: PropsType) => {
             name="category"
             defaultValue={product?.category?.id}
             className="p-[9px] border border-gray-300 rounded-md"
-           />
+          />
+          <small role='status' className="text-red-500">{errors?.category || formState.fieldErrors?.category}</small>
         </div>
 
         <FormField
@@ -148,7 +149,7 @@ const ProductForm = ({ product, action }: PropsType) => {
           placeholder="Product Price"
           defaultValue={product?.price}
           onBlur={validateForm}
-          error={errors?.price}
+          error={errors?.price || formState.fieldErrors?.price}
         />
       </div>
 
@@ -162,7 +163,7 @@ const ProductForm = ({ product, action }: PropsType) => {
           placeholder="Product Stock"
           defaultValue={product?.stock}
           onBlur={validateForm}
-          error={errors?.stock}
+          error={errors?.stock || formState.fieldErrors?.stock}
         />
 
         <FormField
@@ -173,7 +174,7 @@ const ProductForm = ({ product, action }: PropsType) => {
           placeholder=""
           defaultValue={product?.discounted_percentage || undefined}
           onBlur={validateForm}
-          error={errors?.discounted_percentage}
+          error={errors?.discounted_percentage || formState.fieldErrors?.discounted_percentage}
         />
       </div>
 

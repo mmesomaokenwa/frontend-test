@@ -3,6 +3,7 @@
 import { ProductFormState } from '@/lib/types'
 import React from 'react'
 import { useFormStatus } from 'react-dom'
+import Button from './Button'
 
 type PropsType = {
   formState: ProductFormState
@@ -12,9 +13,11 @@ type PropsType = {
 const ProductSubmitBtn = ({ formState, action }: PropsType) => {
   const { pending } = useFormStatus()
   return (
-    <button
+    <Button
       disabled={pending}
-      className="w-full flex items-center justify-center p-3 bg-blue-500 text-white font-medium rounded-md disabled:bg-blue-500/50 transition-colors duration-300"
+      variant={formState.status === "error" ? "error" : "primary"}
+      size="lg"
+      className="w-full flex items-center justify-center p-3 font-medium rounded-md disabled:opacity-50 transition-all duration-300"
       type="submit"
     >
       {pending
@@ -26,7 +29,7 @@ const ProductSubmitBtn = ({ formState, action }: PropsType) => {
         : action === "create"
         ? "Create Product"
         : "Update Product"}
-    </button>
+    </Button>
   );
 }
 

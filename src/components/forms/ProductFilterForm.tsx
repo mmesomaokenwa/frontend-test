@@ -5,6 +5,7 @@ import { formUrlQuery, removeKeysFromQuery } from '@/lib/utils'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useState } from 'react'
 import CategorySelect from '../inputs/CategorySelect'
+import Button from '../buttons/Button'
 
 const prices = [
   { label: '50', value: 50 },
@@ -116,19 +117,23 @@ const ProductFilterForm = () => {
       </div>
 
       <div className="flex items-center justify-end gap-4">
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="sm"
           onClick={handleReset}
-          className="p-2 px-4 border-2 border-blue-500 rounded-md text-blue-500 font-medium"
+          className="p-2 px-4 border-2 text-base font-medium"
         >
           Reset
-        </button>
-        <button
+        </Button>
+        <Button
           type="submit"
-          className="p-2 px-4 rounded-md bg-blue-500 text-white font-medium"
+          size="sm"
+          variant="primary"
+          className="p-2 px-4 text-base font-medium"
         >
           Filter
-        </button>
+        </Button>
       </div>
     </form>
   );

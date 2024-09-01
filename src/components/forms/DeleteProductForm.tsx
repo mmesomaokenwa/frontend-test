@@ -2,6 +2,7 @@ import { deleteProduct } from '@/lib/actions/product-form-actions'
 import { useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
 import { useFormState, useFormStatus } from 'react-dom'
+import Button from '../buttons/Button'
 
 type PropsType = {
   productId: string
@@ -37,21 +38,25 @@ const Buttons = ({ handleClose }: Omit<PropsType, "productId">) => {
   const { pending } = useFormStatus();
   return (
     <div className="grid grid-cols-2 gap-2 font-medium">
-      <button
+      <Button
         type="button"
+        variant="outline"
+        size="lg"
         onClick={handleClose}
         disabled={pending}
-        className="p-4 rounded-lg border"
+        className="rounded-lg border-gray-300 text-black"
       >
         Cancel
-      </button>
-      <button
+      </Button>
+      <Button
         type="submit"
+        size="lg"
+        variant="error"
         disabled={pending}
-        className="p-4 bg-red-500/30 rounded-lg text-red-500 border border-red-500"
+        className="bg-red-500/30 rounded-lg text-red-500 border border-red-500"
       >
         {pending ? "Deleting..." : "Delete"}
-      </button>
+      </Button>
     </div>
   );
 }
