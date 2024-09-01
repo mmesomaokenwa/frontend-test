@@ -89,6 +89,7 @@ export const PATCH = async (
     return NextResponse.json(null, { status, statusText });
   }
 
+  revalidatePath('/')
   revalidatePath(`/product/${params.productId}`)
   revalidatePath(`/product/${params.productId}/edit`, 'page')
 
