@@ -23,4 +23,6 @@ const DeleteDialog = forwardRef<HTMLDialogElement, PropsType>(({ productId }, re
   );
 });
 
+DeleteDialog.displayName = "DeleteDialog"
+
 export default DeleteDialog
