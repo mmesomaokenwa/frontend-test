@@ -17,12 +17,12 @@ const SearchForm = () => {
     if (debouncedValue) { 
       newParams = formUrlQuery({
         params: searchParams.toString(),
-        pairs: { query: debouncedValue, page: '1' }
+        pairs: { query: debouncedValue, page: null }
       })
     } else {
       newParams = removeKeysFromQuery({
         params: searchParams.toString(),
-        keysToRemove: ['query', 'page'],
+        keysToRemove: ['query'],
       })
     }
 
@@ -36,7 +36,9 @@ const SearchForm = () => {
       <label
         htmlFor='search'
         className='sr-only'
-      ></label>
+      >
+        Search
+      </label>
       <input
         id='search'
         type="text"
