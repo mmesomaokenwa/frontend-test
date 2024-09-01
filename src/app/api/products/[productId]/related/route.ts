@@ -20,7 +20,7 @@ export const GET = async (
   const { data, error, status, statusText } = await supabase
     .from("products")
     .select("*, category(*)")
-    .eq("category.id", product.category.id)
+    .eq("category", product.category.id)
     .order("created_at", { ascending: false })
     .limit(10);
 
