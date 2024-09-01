@@ -1,5 +1,6 @@
 import React from 'react'
 import Loader from '../general/Loader';
+import { cn } from '@/lib/utils';
 
 type Props = {
   className?: string
@@ -9,7 +10,9 @@ type Props = {
 const SuspenseFallback = ({ className, spinnerSize = 'md' }: Props) => {
   return (
     <div
-      className={`flex-1 w-full h-full flex items-center justify-center ${className}`}
+      className={cn(
+        `flex-1 w-full h-full flex items-center justify-center ${className}`
+      )}
     >
       <Loader
         className={

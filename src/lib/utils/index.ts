@@ -1,5 +1,11 @@
 import { ZodIssue } from "zod";
-import { FormDataEntries, Issues } from "../types";
+import { Issues } from "../types";
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export const cn = (...inputs: string[]) => {
+  return twMerge(clsx(inputs));
+};
 
 export const calculateDiscountPrice = (price: number, discountPercentage: number) => {
   return price - (price * discountPercentage) / 100;

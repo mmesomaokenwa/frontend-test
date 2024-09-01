@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils'
 import React, { ComponentPropsWithRef } from 'react'
 
 type PropsType = {
@@ -26,11 +27,11 @@ const Button = ({ size = 'md', variant = 'primary', ...props}: PropsType) => {
   return (
     <button
       {...props}
-      className={`rounded-md ${classes} ${props.className}`}
+      className={cn(`rounded-md ${classes} ${props.className}`)}
     >
       {props.children}
     </button>
-  )
+  );
 }
 
 export default Button
