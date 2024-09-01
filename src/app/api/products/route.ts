@@ -1,7 +1,6 @@
 import { productsPerPage } from "@/lib/constants";
 import { productSchema } from "@/lib/schemas/product";
 import { FormDataEntries } from "@/lib/types";
-import { storeImage } from "@/lib/utils";
 import { createClient } from "@/lib/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
@@ -83,6 +82,23 @@ export const POST = async (req: NextRequest) => {
       statusText: "Invalid form data",
     });
   }
+
+ const storeImage = async (image: File): Promise<string> => {
+    const { data, error } = await supabase.storage
+      .from("products")
+      .upload(`public/${image.name}`, image);
+
+    if (error) {
+      console.log(error);
+      return "";
+    }
+
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from("products").getPublicUrl(`public/${image.name}`);
+
+    return publicUrl;
+  };
 
   let images = await Promise.all((data.images as File[]).map((image) => storeImage(image)))
 
