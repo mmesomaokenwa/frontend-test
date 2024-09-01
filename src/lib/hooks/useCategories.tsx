@@ -8,16 +8,12 @@ const useCategories = () => {
   const [error, setError] = useState<string | null>(null)
   const [data, setData] = useState<Category[]>([])
 
-  const controller = new AbortController()
-
   useEffect(() => { 
     const fetchCategories = async () => {
       try {
         setIsLoading(true);
 
-        const res = await fetch("/api/categories", {
-          signal: controller.signal,
-        });
+        const res = await fetch("/api/categories");
 
         if (!res.ok) {
           setError(res.statusText);
@@ -38,8 +34,6 @@ const useCategories = () => {
     }
 
     fetchCategories()
-
-    return () => controller.abort()
   }, [])
 
   return { isLoading, error, data }
