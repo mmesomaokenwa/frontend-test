@@ -59,29 +59,36 @@ export const PATCH = async (
 
   let images
 
- const updateImage = async (image: File): Promise<string> => {
-    const { data, error } = await supabase.storage
-      .from("products")
-      .upload(`public/${image.name}`, image, {
-        upsert: true, // overwritten if the file already exists
-      });
-
-    if (error) {
-      console.log(error);
-      return "";
-    }
-
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from("products").getPublicUrl(`public/${image.name}`);
-
-    return publicUrl;
-  };
-
   // upload images to storage if images were added or changed
   if ((data.images as File[])[0].name && (data.images as File[])[0].size) {
-    images = await Promise.all(
-      (data.images as File[]).map((image) => updateImage(image))
+    images = await Promise.all(data.images.map((image) => {
+        if (image instanceof File) {
+          const updateImage = async (image: File): Promise<string> => {
+            const { data, error } = await supabase.storage
+              .from("products")
+              .upload(`public/${image.name}`, image, {
+                upsert: true, // overwritten if the file already exists
+              });
+
+            if (error) {
+              console.log(error);
+              return "";
+            }
+
+            const {
+              data: { publicUrl },
+            } = supabase.storage
+              .from("products")
+              .getPublicUrl(`public/${image.name}`);
+
+            return publicUrl;
+          };
+
+          return updateImage(image)
+        } else {
+          return image
+        }
+      })
     );
 
     images = images.filter((image) => image !== "");

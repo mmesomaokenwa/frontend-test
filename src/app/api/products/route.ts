@@ -83,24 +83,32 @@ export const POST = async (req: NextRequest) => {
     });
   }
 
- const storeImage = async (image: File): Promise<string> => {
-    const { data, error } = await supabase.storage
-      .from("products")
-      .upload(`public/${image.name}`, image);
+  let images = await Promise.all(data.images.map((image) => {
+    if (image instanceof File) {
+      const storeImage = async (image: File): Promise<string> => {
+        const { data, error } = await supabase.storage
+          .from("products")
+          .upload(`public/${image.name}`, image);
 
-    if (error) {
-      console.log(error);
-      return "";
+        if (error) {
+          console.log(error);
+          return "";
+        }
+
+        const {
+          data: { publicUrl },
+        } = supabase.storage
+          .from("products")
+          .getPublicUrl(`public/${image.name}`);
+
+        return publicUrl;
+      };
+
+      return storeImage(image)
+    } else {
+      return image
     }
-
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from("products").getPublicUrl(`public/${image.name}`);
-
-    return publicUrl;
-  };
-
-  let images = await Promise.all((data.images as File[]).map((image) => storeImage(image)))
+  }))
 
   images = images.filter((image) => image !== '')
 
