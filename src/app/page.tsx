@@ -58,7 +58,7 @@ export default function Home({ searchParams }: Props) {
 }
 
 const HomeProducts = async ({ searchParams }: { searchParams: SearchParams }) => {
-  const stringParams = parseSearchParams({ ...searchParams, page: (searchParams.page || 1).toString() }).toString()
+  const stringParams = parseSearchParams({ ...searchParams, price: searchParams.price?.toString() || '', page: (searchParams.page || 1).toString() }).toString()
   
   const res = await fetch(`${baseUrl}/api/products?${stringParams}`)
 
