@@ -23,7 +23,7 @@ const ProductForm = ({ product, action }: PropsType) => {
   const [formState, formAction] = useFormState(action === 'create' ? createProduct : editProduct, initialState)
   const [errors, setErrors] = useState<Issues | null>(null)
   const [images, setImages] = useState<ProductFormValues['images']>([])
-  const [category, setCategory] = useState<ProductFormValues['category']>(product?.category || '')
+  const [category, setCategory] = useState<ProductFormValues['category']>(product?.category.id || '')
 
   const ref = useRef<HTMLFormElement>(null)
 
