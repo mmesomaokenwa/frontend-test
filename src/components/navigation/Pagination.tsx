@@ -13,10 +13,12 @@ const Pagination = ({ searchParams, count }: PropsType) => {
   const [prevPageParams, nextPageParams] = [
     parseSearchParams({
       ...searchParams,
+      price: searchParams.price?.toString() || '',
       page: ((searchParams.page || 1) - 1).toString(),
     }),
     parseSearchParams({
       ...searchParams,
+      price: searchParams.price?.toString() || '',
       page: ((searchParams.page || 1) + 1).toString(),
     }),
   ];
