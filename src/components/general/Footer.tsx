@@ -2,11 +2,11 @@ import React from 'react'
 
 const Footer = () => {
   return (
-    <footer className="w-full p-4">
+    <footer className="w-full p-4 pt-8">
       <div className="w-full max-w-6xl mx-auto flex flex-col gap-4">
-        <div className="flex lg:justify-between gap-4 flex-wrap">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="flex flex-col gap-4">
-            <p className="md:text-lg lg:text-xl font-semibol">
+            <p className="md:text-lg lg:text-xl font-semibold">
               Support
             </p>
             <ul className="flex flex-col gap-4 text-sm">
@@ -16,7 +16,7 @@ const Footer = () => {
             </ul>
           </div>
           <div className="flex flex-col gap-4">
-            <p className="md:text-lg lg:text-xl font-semibol">
+            <p className="md:text-lg lg:text-xl font-semibold">
               Account
             </p>
             <ul className="flex flex-col gap-4 text-sm">
@@ -27,7 +27,7 @@ const Footer = () => {
             </ul>
           </div>
           <div className="flex flex-col gap-4">
-            <p className="md:text-lg lg:text-xl font-semibol">
+            <p className="md:text-lg lg:text-xl font-semibold">
               Quick Link
             </p>
             <ul className="flex flex-col gap-4 text-sm">
