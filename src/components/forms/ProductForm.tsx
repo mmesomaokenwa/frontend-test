@@ -23,6 +23,7 @@ const ProductForm = ({ product, action }: PropsType) => {
   const [formState, formAction] = useFormState(action === 'create' ? createProduct : editProduct, initialState)
   const [errors, setErrors] = useState<Issues | null>(null)
   const [images, setImages] = useState<ProductFormValues['images']>([])
+  const [category, setCategory] = useState<ProductFormValues['category']>(product?.category || '')
 
   const ref = useRef<HTMLFormElement>(null)
 
@@ -133,7 +134,8 @@ const ProductForm = ({ product, action }: PropsType) => {
           <CategorySelect
             id="category"
             name="category"
-            defaultValue={product?.category?.id}
+            value={category}
+            onChange={(e) => setCategory(e.target.value)} // making this a controlled input because defaultValue showcases an issue in select 
             className="p-[9px] border border-gray-300 rounded-md"
           />
           <small role='status' className="text-red-500">{errors?.category || formState?.fieldErrors?.category}</small>
