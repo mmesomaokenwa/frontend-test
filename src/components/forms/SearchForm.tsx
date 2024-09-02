@@ -17,7 +17,7 @@ const SearchForm = () => {
     if (debouncedValue) { 
       newParams = formUrlQuery({
         params: searchParams.toString(),
-        pairs: { query: debouncedValue, page: null }
+        pairs: { query: debouncedValue }
       })
     } else {
       newParams = removeKeysFromQuery({
